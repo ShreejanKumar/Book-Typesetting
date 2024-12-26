@@ -17,7 +17,7 @@ def get_response(chapter, font_size, lineheight):
   client = OpenAI(api_key = st.secrets["Openai_api"])
   font_size_px = f"{font_size}px"
   line_height_val = str(lineheight)
-  max_chars = 37000
+  max_chars = 35000
   # Set up OpenAI model and prompt
   model="gpt-4o-mini-2024-07-18"
   # Split the chapter into two parts based on character count
@@ -926,7 +926,7 @@ This is the sample HTML : <!DOCTYPE html>
     response = chat_completion.choices[0].message.content
     return response
 
-  elif(len(chapter) > max_chars and len(chapter) <= 74000):
+  elif(len(chapter) > max_chars and len(chapter) <= 70000):
         # If the chapter exceeds the limit, split into two parts
         split_pos = chapter.rfind('.', 0, max_chars)
         first_part = chapter[:split_pos + 1]
@@ -1902,7 +1902,7 @@ This is the sample HTML : <!DOCTYPE html>
   else:
         # If the chapter exceeds the limit, split into two parts
         split_pos_1 = chapter.rfind('.', 0, max_chars)
-        split_pos_2 = chapter.rfind('.', max_chars, 74000)
+        split_pos_2 = chapter.rfind('.', max_chars, 70000)
         first_part = chapter[:split_pos_1 + 1]
         second_part = chapter[split_pos_1 + 1 : split_pos_2 + 1]
         third_part = chapter[split_pos_2 + 1:]
