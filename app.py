@@ -9,6 +9,7 @@ import os
 from PyPDF2 import PdfMerger
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from bs4 import BeautifulSoup
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -140,6 +141,23 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
 
     # Streamlit UI
     st.title("Chapter PDF Generator")
+    
+    def get_word_count(html_file_path):
+        # Read the HTML file
+        with open(html_file_path, 'r', encoding='utf-8') as file:
+            html_content = file.read()
+        
+        # Parse the HTML content using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Extract text from the HTML
+        text = soup.get_text()
+        
+        # Split the text into words and count them
+        words = text.split()
+        word_count = len(words)
+        
+        return word_count
 
     # Dynamic list to store chapter inputs
     chapter_texts = []
@@ -176,10 +194,11 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
 
         # Set the initial page position for the first chapter
         current_position = first_page_position  # "Right" or "Left" based on input
-
+        wc = []
         for idx, chapter_text in enumerate(chapter_texts):
             response = get_response(chapter_text, font_size, line_height)
             html_pth = save_response(response)
+            wc.append(get_word_count(html_pth))
 
             main_pdf = f'out_{idx+1}.pdf'
             
@@ -222,3 +241,4 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 file_name=merged_pdf_path,
                 mime="application/pdf"
             )
+        st.write(wc)
