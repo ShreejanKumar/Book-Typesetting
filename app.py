@@ -241,4 +241,6 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 file_name=merged_pdf_path,
                 mime="application/pdf"
             )
-        st.write(wc)
+        st.write("### Chapter-wise Word Count")
+        for idx, count in enumerate(wc, start=1):
+            st.write(f"Chapter {idx}: {count} words")
