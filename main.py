@@ -1906,7 +1906,7 @@ This is the sample HTML : <!DOCTYPE html>
         first_part = chapter[:split_pos_1 + 1]
         second_part = chapter[split_pos_1 + 1 : split_pos_2 + 1]
         third_part = chapter[split_pos_2 + 1:]
-	st.write(second_part)
+	      st.write(second_part)
         # Process the first part normally
         prompt_template_1 = """
         You are an expert book formatter.
