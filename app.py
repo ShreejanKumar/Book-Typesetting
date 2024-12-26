@@ -148,6 +148,8 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     for i in range(num_chapters):
         chapter_text = st.text_area(f'Enter the Chapter {i+1} text:')
         chapter_texts.append(chapter_text)
+        word_count = len(chapter_text.split()) if chapter_text else 0
+        st.write(f'Word count: {word_count}')
 
     author_name = st.text_input('Enter the Author Name:')
     book_name = st.text_input('Enter the Book Name:')
