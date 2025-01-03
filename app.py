@@ -12,6 +12,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
 import uuid
 from io import BytesIO
+from PIL import Image
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -185,11 +186,16 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             uploaded_file = st.file_uploader(f"Upload Image {j+1} for Chapter {i+1}", type=["png", "jpg", "jpeg"], key=f"chapter_{i}_image_{j}")
             temp_desc = st.text_input(f'Enter the Image {j+1} description:')
             if uploaded_file:
-                # Create a unique name for the image
                 file_bytes = uploaded_file.read()
-                image_path = f"./temp_{uploaded_file.name}"
-                with open(image_path, "wb") as f:
+                temp_path = f"./temp_{uploaded_file.name}"
+                with open(temp_path, "wb") as f:
                     f.write(file_bytes)
+                    
+                with Image.open(temp_path) as img:
+                    # Convert to PNG format
+                    output_buffer = BytesIO()
+                    img.save(output_buffer, format="PNG")
+                    image_content = output_buffer.getvalue()
                     
                 # Append image path to chapter images
                 chp_image.append(image_path)
