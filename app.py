@@ -11,7 +11,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
 import uuid
-from pathlib import Path
+from io import BytesIO
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -118,31 +118,29 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
 
     async def html_to_pdf_with_margins(html_file, output_pdf):
         async with async_playwright() as p:
-            browser = await p.chromium.launch(args=["--allow-file-access-from-files"])
+            browser = await p.chromium.launch()
             page = await browser.new_page()
-    
-            # Load HTML content
+
             with open(html_file, 'r', encoding='utf-8') as file:
                 html_content = file.read()
-    
-            # Load content and ensure all assets are loaded
-            await page.set_content(html_content, wait_until='networkidle', timeout=60000)
-    
-            # Generate PDF with margins and background
+
+            await page.set_content(html_content, wait_until='networkidle')
+
             pdf_options = {
                 'path': output_pdf,
                 'format': 'A4',
                 'margin': {
-                    'top': '70px',
+                    'top': '85px',
                     'bottom': '60px',
                     'left': '70px',
                     'right': '40px'
                 },
                 'print_background': True
             }
-    
+
             await page.pdf(**pdf_options)
             await browser.close()
+
     # Streamlit UI
     st.title("Chapter PDF Generator")
     
@@ -188,16 +186,11 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             temp_desc = st.text_input(f'Enter the Image {j+1} description:')
             if uploaded_file:
                 # Create a unique name for the image
-                unique_name = f"{uuid.uuid4()}_{uploaded_file.name}"
-                image_path = os.path.join("temp", unique_name)
-                
-                # Ensure temp directory exists
-                os.makedirs("temp", exist_ok=True)
-                
-                # Save the uploaded image
+                file_bytes = uploaded_file.read()
+                image_path = f"./temp_{uploaded_file.name}"
                 with open(image_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-    
+                    f.write(file_bytes)
+                    
                 # Append image path to chapter images
                 chp_image.append(image_path)
             img_descp.append(temp_desc)
@@ -236,8 +229,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             response = get_response(chapter_text, font_size, line_height)
             if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
                 for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
-                    absolute_image_path = Path(image_path).resolve().as_uri()
-                    response = image_html(response, absolute_image_path, image_desc)
+                    response = image_html(response, image_path, image_desc)
                     
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
