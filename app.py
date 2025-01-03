@@ -2,7 +2,7 @@ import streamlit as st
 import nest_asyncio
 from playwright.async_api import async_playwright
 import asyncio
-from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers
+from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers, image_html
 from concurrent.futures import ThreadPoolExecutor
 from reportlab.pdfgen import canvas
 import os
@@ -10,6 +10,7 @@ from PyPDF2 import PdfMerger
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
+import uuid
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -158,17 +159,50 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         word_count = len(words)
         
         return word_count
-
+    
     # Dynamic list to store chapter inputs
     chapter_texts = []
     num_chapters = st.number_input('How many chapters do you want to add?', min_value=1, max_value=10, step=1)
-
+    images = []
+    image_description = []
     for i in range(num_chapters):
+        # Chapter text input
         chapter_text = st.text_area(f'Enter the Chapter {i+1} text:')
         chapter_texts.append(chapter_text)
+    
+        # Word count display
         word_count = len(chapter_text.split()) if chapter_text else 0
         st.write(f'Word count: {word_count}')
-
+    
+        # Number of images for the chapter
+        num_images = st.number_input(f'How many images for Chapter {i+1}?', min_value=1, max_value=10, step=1)
+    
+        # List to store images for the current chapter
+        chp_image = []
+        img_descp = []
+        for j in range(num_images):
+            uploaded_file = st.file_uploader(f"Upload Image {j+1} for Chapter {i+1}", type=["png", "jpg", "jpeg"], key=f"chapter_{i}_image_{j}")
+            temp_desc = st.text_input(f'Enter the Image {j+1} description:')
+            if uploaded_file:
+                # Create a unique name for the image
+                unique_name = f"{uuid.uuid4()}_{uploaded_file.name}"
+                image_path = os.path.join("temp", unique_name)
+                
+                # Ensure temp directory exists
+                os.makedirs("temp", exist_ok=True)
+                
+                # Save the uploaded image
+                with open(image_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+    
+                # Append image path to chapter images
+                chp_image.append(image_path)
+            img_descp.append(temp_desc)
+                
+        image_description.append(img_descp)
+        # Append chapter images to images list
+        images.append(chp_image)
+        
     author_name = st.text_input('Enter the Author Name:')
     book_name = st.text_input('Enter the Book Name:')
     font_size = st.text_input('Enter the Font Size')
@@ -197,9 +231,12 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         wc = []
         for idx, chapter_text in enumerate(chapter_texts):
             response = get_response(chapter_text, font_size, line_height)
+            if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
+                for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
+                    response = image_html(response, image_path, image_desc)
+                    
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
-
             main_pdf = f'out_{idx+1}.pdf'
             
             # Run the function to generate the main PDF
@@ -241,6 +278,4 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 file_name=merged_pdf_path,
                 mime="application/pdf"
             )
-        st.write("### Chapter-wise Word Count")
-        for idx, count in enumerate(wc, start=1):
-            st.write(f"Chapter {idx}: {count} words")
+        st.write(wc)
