@@ -9,6 +9,8 @@ import PyPDF2
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 from pypdf import PdfReader, PdfWriter
+from io import BytesIO
+import re
 
 def get_response(chapter, font_size, lineheight):
   
@@ -932,7 +934,7 @@ def image_html(html_text, image_path, image_desc):
     # Set up OpenAI model and prompt
     model="gpt-4o-mini-2024-07-18"
     prompt_template = """ I want you to modify the html code i am giving to incorporate an image based on the given requirements.
-    For example: If the requirement is: Insert Image on the right side of this paragraph in a circular frame: All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
+    For example: If the requirement is Insert Image on the right side of this paragraph: All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
     
     and the html file is:
     <!DOCTYPE html>
@@ -1023,20 +1025,18 @@ Then modify it to this to add the image:
             margin-top: 0.2em;
         }
 	
-	      .paragraph-container {
+	.paragraph-container {
             display: flex;
             align-items: center; /* Vertically center the image */
             justify-content: flex-start; /* Align text and image properly */
             text-align: justify;
         }
 
-        .paragraph-container img.circular {
-            width: 150px; /* Fixed width for the circular frame */
-            height: 150px; /* Fixed height for the circular frame */
-            border-radius: 50%; /* Make the image circular */
-            margin-right: 15px; /* Add space between the text and image */
-            object-fit: cover; /* Cover the circular frame with the image */
-            display: block; /* Ensure proper rendering in all browsers */
+        .paragraph-container img {
+            max-width: 200px; /* Set a max width for the image */
+            height: auto; /* Maintain aspect ratio */
+            margin-left: 10px; /* Add space between the text and the image */
+            margin-right: 10px; /* Optional for more balance */
         }
         
 	blockquote {
@@ -1070,19 +1070,22 @@ Then modify it to this to add the image:
         <p>
             All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
         </p>
-        <img class="circular" src=Image path alt="something">
+        <img src=Image path alt="something">
     </div>
 </body>
 </html>
 
-This is just an example. Keep in mind you need to be more generalised based on whatever the requirement is, like you may need to add the img tag before the paragraph tag in case the image needs to be on the left side of the paragraph.
 Return only the Html text and nothing else. Do not write ```, start directly from <!DOCTYPE html>.
 Here is the requirement: <<img_descp>>
 Image path: <<path>>
 HTML: <<html>>
     """
-    
-    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", image_path).replace("<<html>>", html_text)
+    match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
+    if match:
+        file_id = match.group(1)
+        # Create the new link
+        path = f"https://drive.google.com/thumbnail?id={file_id}"
+    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", path).replace("<<html>>", html_text)
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -1102,14 +1105,6 @@ def save_response(response):
     html_pth = 'neww.html'
     with open(html_pth, 'w', encoding='utf-8') as file:
         file.write(response)
-    with open(html_pth, "rb") as file:
-            st.download_button(
-                label="Download html",
-                data=file,
-                file_name=html_pth,
-                mime="application/pdf"
-            )
-    return html_pth
 
 
 nest_asyncio.apply()
