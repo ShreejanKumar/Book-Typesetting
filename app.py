@@ -198,7 +198,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                     image_content = output_buffer.getvalue()
                     
                 # Append image path to chapter images
-                chp_image.append(image_path)
+                chp_image.append(temp_path)
             img_descp.append(temp_desc)
                 
         image_description.append(img_descp)
