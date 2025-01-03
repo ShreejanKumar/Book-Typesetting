@@ -1102,6 +1102,13 @@ def save_response(response):
     html_pth = 'neww.html'
     with open(html_pth, 'w', encoding='utf-8') as file:
         file.write(response)
+    with open(html_pth, "rb") as file:
+            st.download_button(
+                label="Download html",
+                data=file,
+                file_name=html_pth,
+                mime="application/pdf"
+            )
     return html_pth
 
 
