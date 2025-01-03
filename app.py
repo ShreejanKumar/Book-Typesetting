@@ -12,7 +12,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
 import uuid
 from io import BytesIO
-from PIL import Image
+from PIL import Image 
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -163,6 +163,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         return word_count
     
     # Dynamic list to store chapter inputs
+    os.system('playwright install')
     chapter_texts = []
     num_chapters = st.number_input('How many chapters do you want to add?', min_value=1, max_value=10, step=1)
     images = []
@@ -183,22 +184,9 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         chp_image = []
         img_descp = []
         for j in range(num_images):
-            uploaded_file = st.file_uploader(f"Upload Image {j+1} for Chapter {i+1}", type=["png", "jpg", "jpeg"], key=f"chapter_{i}_image_{j}")
+            img_link = st.text_input(f"Enter Google drive link of Image {j+1} for Chapter {i+1}")
             temp_desc = st.text_input(f'Enter the Image {j+1} description:')
-            if uploaded_file:
-                file_bytes = uploaded_file.read()
-                temp_path = f"./temp_{uploaded_file.name}"
-                with open(temp_path, "wb") as f:
-                    f.write(file_bytes)
-                    
-                with Image.open(temp_path) as img:
-                    # Convert to PNG format
-                    output_buffer = BytesIO()
-                    img.save(output_buffer, format="PNG")
-                    image_content = output_buffer.getvalue()
-                    
-                # Append image path to chapter images
-                chp_image.append(temp_path)
+            chp_image.append(img_link)
             img_descp.append(temp_desc)
                 
         image_description.append(img_descp)
