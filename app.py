@@ -222,11 +222,8 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         for idx, chapter_text in enumerate(chapter_texts):
             response = get_response(chapter_text, font_size, line_height)
             if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
-                temp_r = response
                 for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
-                    r = image_html(temp_r, image_path, image_desc)
-                    temp_r = r
-            reponse = temp_r
+                    response = image_html(response, image_path, image_desc)
                     
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
