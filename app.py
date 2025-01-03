@@ -11,6 +11,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
 import uuid
+from pathlib import Path
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -235,7 +236,8 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             response = get_response(chapter_text, font_size, line_height)
             if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
                 for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
-                    response = image_html(response, image_path, image_desc)
+                    absolute_image_path = Path(image_path).resolve().as_uri()
+                    response = image_html(response, absolute_image_path, image_desc)
                     
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
