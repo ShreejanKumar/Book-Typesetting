@@ -117,29 +117,31 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
 
     async def html_to_pdf_with_margins(html_file, output_pdf):
         async with async_playwright() as p:
-            browser = await p.chromium.launch()
+            browser = await p.chromium.launch(args=["--allow-file-access-from-files"])
             page = await browser.new_page()
-
+    
+            # Load HTML content
             with open(html_file, 'r', encoding='utf-8') as file:
                 html_content = file.read()
-
-            await page.set_content(html_content, wait_until='networkidle')
-
+    
+            # Load content and ensure all assets are loaded
+            await page.set_content(html_content, wait_until='networkidle', timeout=60000)
+    
+            # Generate PDF with margins and background
             pdf_options = {
                 'path': output_pdf,
                 'format': 'A4',
                 'margin': {
-                    'top': '85px',
+                    'top': '70px',
                     'bottom': '60px',
                     'left': '70px',
                     'right': '40px'
                 },
                 'print_background': True
             }
-
+    
             await page.pdf(**pdf_options)
             await browser.close()
-
     # Streamlit UI
     st.title("Chapter PDF Generator")
     
