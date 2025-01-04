@@ -933,7 +933,7 @@ def image_html(html_text, image_path, image_desc):
       
     # Set up OpenAI model and prompt
     model="gpt-4o-mini-2024-07-18"
-    prompt_template = """ I want you to modify the html code i am giving to incorporate an image based on the given requirements.
+    prompt_template = """ I want you to modify the html code i am giving to incorporate an image based on the given requirements. If there is already an image in the code then do not remove it. You have to figure out a way to retain all the images.
     For example: If the requirement is Insert Image on the right side of this paragraph: All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
     
     and the html file is:
@@ -992,6 +992,8 @@ def image_html(html_text, image_path, image_desc):
     <p>“You won’t be bored, I can promise that,” Ricer said mysteriously.</p>
 
     <p>All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.</p>
+    
+    <p>“If Ricer let me join, I’d always have something to eat,” he thought, slipping for a moment into idle reverie, but then he clenched his teeth. “What am I saying, I will join their gang! I’ll show that lot what I’m made of! And then, when I’m bigger, I’ll be the one in charge!”</p>
 
 </body>
 </html>
@@ -1072,8 +1074,36 @@ Then modify it to this to add the image:
         </p>
         <img src=Image path alt="something">
     </div>
+    <p>“If Ricer let me join, I’d always have something to eat,” he thought, slipping for a moment into idle reverie, but then he clenched his teeth. “What am I saying, I will join their gang! I’ll show that lot what I’m made of! And then, when I’m bigger, I’ll be the one in charge!”</p>
 </body>
 </html>
+
+Note:
+If the requirement is to add the image so that it takes half of the page after the line then you can use these values
+.image-container {
+            text-align: center; /* Center the image */
+            margin: 1em 0; /* Add some margin around the image */
+        }
+
+.image-container img {
+            width: 550px; /* Set the image to take up to half a page */
+            height: auto; /* Maintain aspect ratio */
+	        object-fit: contain;
+            aspect-ratio: auto; 
+        }
+
+And in case of a full page image:
+.image-container {
+            text-align: center; /* Center the image */
+            margin: 1em 0; /* Add some margin around the image */
+        }
+
+.image-container img {
+            width: 100%; /* Set the image to take up the full width */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain;
+            margin: 5em 0;
+        }
 
 Return only the Html text and nothing else. Do not write ```, start directly from <!DOCTYPE html>.
 Here is the requirement: <<img_descp>>
