@@ -1086,7 +1086,7 @@ If the requirement is to add the image so that it takes half of the page after t
         }
 
 .image-container img {
-            width: 550px; /* Set the image to take up to half a page */
+            width: 600px; /* Set the image to take up to half a page */
             height: auto; /* Maintain aspect ratio */
 	        object-fit: contain;
             aspect-ratio: auto; 
