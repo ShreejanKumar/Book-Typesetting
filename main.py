@@ -1106,6 +1106,7 @@ And in case of a full page image:
         }
 
 Return only the Html text and nothing else. Do not write ```, start directly from <!DOCTYPE html>.
+In case of multiple containers make sure to add both containers for all the images in the style tag and finish the entire text.
 Here is the requirement: <<img_descp>>
 Image path: <<path>>
 HTML: <<html>>
