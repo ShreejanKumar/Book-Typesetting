@@ -170,7 +170,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     image_description = []
     for i in range(num_chapters):
         # Chapter text input
-        chapter_text = st.text_area(f'Enter the Chapter {i+1} text:')
+        chapter_text = st.text_area(f'Enter the Chapter {i+1} text:', key=f'chapter_text_{i}')
         chapter_texts.append(chapter_text)
     
         # Word count display
@@ -178,17 +178,17 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         st.write(f'Word count: {word_count}')
     
         # Number of images for the chapter
-        num_images = st.number_input(f'How many images for Chapter {i+1}?', min_value=1, max_value=10, step=1)
+        num_images = st.number_input(f'How many images for Chapter {i+1}?', min_value=1, max_value=10, step=1, key=f'num_images_{i}')
     
         # List to store images for the current chapter
         chp_image = []
         img_descp = []
         for j in range(num_images):
-            img_link = st.text_input(f"Enter Google drive link of Image {j+1} for Chapter {i+1}")
-            temp_desc = st.text_input(f'Enter the Image {j+1} description:')
+            img_link = st.text_input(f"Enter Google drive link of Image {j+1} for Chapter {i+1}", key=f'img_link_{i}_{j}')
+            temp_desc = st.text_input(f'Enter the Image {j+1} description:', key=f'img_desc_{i}_{j}')
             chp_image.append(img_link)
             img_descp.append(temp_desc)
-                
+    
         image_description.append(img_descp)
         # Append chapter images to images list
         images.append(chp_image)
