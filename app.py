@@ -117,7 +117,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     # Function to convert HTML to PDF with Playwright
     nest_asyncio.apply()
 
-    async def html_to_pdf_with_margins(html_file, output_pdf):
+    async def html_to_pdf_with_margins(html_file, output_pdf, orientation):
         async with async_playwright() as p:
             browser = await p.chromium.launch()
             page = await browser.new_page()
@@ -126,18 +126,31 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 html_content = file.read()
 
             await page.set_content(html_content, wait_until='networkidle')
-
-            pdf_options = {
-                'path': output_pdf,
-                'format': 'A4',
-                'margin': {
-                    'top': '85px',
-                    'bottom': '60px',
-                    'left': '70px',
-                    'right': '40px'
-                },
-                'print_background': True
-            }
+            if orientation == 'Landscape':
+                pdf_options = {
+                    'path': output_pdf,
+                    'format': 'A4',
+                    'margin': {
+                        'top': '85px',
+                        'bottom': '60px',
+                        'left': '70px',
+                        'right': '40px'
+                    },
+                    'print_background': True,
+                    'landscape': True
+                }
+            else:
+                pdf_options = {
+                    'path': output_pdf,
+                    'format': 'A4',
+                    'margin': {
+                        'top': '85px',
+                        'bottom': '60px',
+                        'left': '70px',
+                        'right': '40px'
+                    },
+                    'print_background': True,
+                }
 
             await page.pdf(**pdf_options)
             await browser.close()
@@ -210,6 +223,8 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     First_page_no = st.number_input('Enter the First Page Number:', min_value=0, max_value=1000, step=1)
     options = ['Left', 'Right']
     first_page_position = st.selectbox('Select First Page Position:', options)
+    orient = ['Portrait', 'Landscape']
+    orientation = st.selectbox('Select Orientation', orient)
 
     # Button to generate PDF
     if st.button("Generate PDF"):
@@ -223,7 +238,8 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             response = get_response(chapter_text, font_size, line_height)
             if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
                 for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
-                    response = image_html(response, image_path, image_desc)
+                    # Update the response iteratively with each image and description
+                    response = image_html(response, image_path, image_desc)  # Update `response` directly
                     
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
@@ -232,7 +248,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             # Run the function to generate the main PDF
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(html_to_pdf_with_margins(html_pth, main_pdf))
+            loop.run_until_complete(html_to_pdf_with_margins(html_pth, main_pdf, orientation))
 
             total_pages = get_pdf_page_count(main_pdf)
             overlay_pdf = f"overlay_{idx+1}.pdf"
