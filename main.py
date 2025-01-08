@@ -928,7 +928,7 @@ This is the sample HTML : <!DOCTYPE html>
   return response
 
 
-def image_html(html_text, image_path, image_desc):
+def image_html(html_text, image_path, image_desc, orientation):
     client = OpenAI(api_key = st.secrets["Openai_api"])
       
     # Set up OpenAI model and prompt
