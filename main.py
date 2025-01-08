@@ -1027,18 +1027,10 @@ Then modify it to this to add the image:
             margin-top: 0.2em;
         }
 	
-	.paragraph-container {
-            display: flex;
-            align-items: center; /* Vertically center the image */
-            justify-content: flex-start; /* Align text and image properly */
-            text-align: justify;
-        }
-
-        .paragraph-container img {
-            max-width: 200px; /* Set a max width for the image */
-            height: auto; /* Maintain aspect ratio */
-            margin-left: 10px; /* Add space between the text and the image */
-            margin-right: 10px; /* Optional for more balance */
+    	img {
+            float: right; /* Float image to the left */
+            margin-right: 15px; /* Space between image and text */
+            margin-bottom: 10px; /* Optional: Space below the image */
         }
         
 	blockquote {
@@ -1067,13 +1059,11 @@ Then modify it to this to add the image:
     <p>“Are you planning something big?” Dodum asked, scratching the inside of his left ear and sniffing his claw.</p>
 
     <p>“You won’t be bored, I can promise that,” Ricer said mysteriously.</p>
-
-    <div class="paragraph-container">
+	<img src=Image path alt="something">
         <p>
             All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
         </p>
-        <img src=Image path alt="something">
-    </div>
+        
     <p>“If Ricer let me join, I’d always have something to eat,” he thought, slipping for a moment into idle reverie, but then he clenched his teeth. “What am I saying, I will join their gang! I’ll show that lot what I’m made of! And then, when I’m bigger, I’ll be the one in charge!”</p>
 </body>
 </html>
@@ -1109,6 +1099,7 @@ Return only the Html text and nothing else. Do not write ```, start directly fro
 In case of multiple images make sure to add both the paragraph and image containers for all the images in the style tag and finish the entire text.
 Here is the requirement: <<img_descp>>
 Image path: <<path>>
+Orientation: <<orient>>
 HTML: <<html>>
     """
     match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
