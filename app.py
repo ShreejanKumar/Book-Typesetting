@@ -240,7 +240,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
                     # Update the response iteratively with each image and description
                     response = image_html(response, image_path, image_desc, orientation)  # Update `response` directly
-                    
+            st.write(response)
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
             main_pdf = f'out_{idx+1}.pdf'
