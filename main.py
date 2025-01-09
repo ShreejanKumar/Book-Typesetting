@@ -1081,12 +1081,12 @@ Here is the requirement: <<img_descp>>
 Image path: <<path>>
 HTML: <<html>>
     """
-    # match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
-    # if match:
-    #     file_id = match.group(1)
-    #     # Create the new link
-    #     path = f"https://drive.google.com/thumbnail?id={file_id}"
-    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", image_path).replace("<<html>>", html_text)
+    match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
+    if match:
+        file_id = match.group(1)
+        # Create the new link
+        path = f"https://drive.google.com/thumbnail?id={file_id}"
+    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", path).replace("<<html>>", html_text)
     chat_completion = client.chat.completions.create(
         messages=[
             {
