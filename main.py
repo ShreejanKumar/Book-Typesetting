@@ -930,7 +930,7 @@ This is the sample HTML : <!DOCTYPE html>
 
 def image_html(html_text, image_path, image_desc, orientation):
     client = OpenAI(api_key = st.secrets["Openai_api"])
-      
+
     # Set up OpenAI model and prompt
     model="gpt-4o-mini-2024-07-18"
     prompt_template = """ I want you to modify the html code i am giving to incorporate an image based on the given requirements. If there is already an image in the code then do not remove it. You have to figure out a way to retain all the images.
@@ -951,25 +951,21 @@ def image_html(html_text, image_path, image_desc, orientation):
             text-align: justify;
             margin: 2rem 4rem;
         }
-
         h1.chapter-heading {
             text-align: center;
             margin-top: 25vh; /* Center the heading vertically on the page */
             margin-bottom: 10rem;
             page-break-before: always; /* Start on a new page */
         }
-
         p {
             text-indent: 1em;
             margin-bottom: 0.1em;
             margin-top: 0.2em;
         }
-
         blockquote {
             margin: 1em 2em;
             font-style: italic;
         }
-
         .poetry {
             margin: 1em 2em;
             font-style: italic;
@@ -978,26 +974,17 @@ def image_html(html_text, image_path, image_desc, orientation):
 </head>
 <body>
     <h1 class="chapter-heading">Chapter One<br>‘The Silver Harpoon’</h1>
-
     <p>Everybody in Mouseville knew Ricer and his gang. They left a trail of broken windows, upturned dustbins, and graffiti-covered walls wherever they went. Stallholders hastily covered their wares if the hoodlum rodents showed their roguish faces at the market, and even the scruffy seagulls flapped off with an uneasy squawk when Ricer’s Micers sauntered out onto the docks.</p>
-
     <p>The rest of the gang suddenly went very quiet indeed.</p>
-
     <p>“Why, what business do we have there?” Dodum asked, rubbing his head.</p>
-
     <p>“I had a little disagreement with the landlord a while back. So now we’re going to hit him where it hurts.”</p>
-
     <p>“Are you planning something big?” Dodum asked, scratching the inside of his left ear and sniffing his claw.</p>
-
     <p>“You won’t be bored, I can promise that,” Ricer said mysteriously.</p>
-
     <p>All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.</p>
     
     <p>“If Ricer let me join, I’d always have something to eat,” he thought, slipping for a moment into idle reverie, but then he clenched his teeth. “What am I saying, I will join their gang! I’ll show that lot what I’m made of! And then, when I’m bigger, I’ll be the one in charge!”</p>
-
 </body>
 </html>
-
 Then modify it to this to add the image:
 <!DOCTYPE html>
 <html lang="en">
@@ -1013,31 +1000,35 @@ Then modify it to this to add the image:
             text-align: justify;
             margin: 2rem 4rem;
         }
-
         h1.chapter-heading {
             text-align: center;
             margin-top: 25vh; /* Center the heading vertically on the page */
             margin-bottom: 10rem;
             page-break-before: always; /* Start on a new page */
         }
-
         p {
             text-indent: 1em;
             margin-bottom: 0.1em;
             margin-top: 0.2em;
         }
 	
-    	img {
-            float: right; /* Float image to the left */
-            margin-right: 15px; /* Space between image and text */
-            margin-bottom: 10px; /* Optional: Space below the image */
+	.paragraph-container {
+            display: flex;
+            align-items: center; /* Vertically center the image */
+            justify-content: flex-start; /* Align text and image properly */
+            text-align: justify;
+        }
+        .paragraph-container img {
+            max-width: 200px; /* Set a max width for the image */
+            height: auto; /* Maintain aspect ratio */
+            margin-left: 10px; /* Add space between the text and the image */
+            margin-right: 10px; /* Optional for more balance */
         }
         
 	blockquote {
             margin: 1em 2em;
             font-style: italic;
         }
-
         .poetry {
             margin: 1em 2em;
             font-style: italic;
@@ -1046,68 +1037,56 @@ Then modify it to this to add the image:
 </head>
 <body>
     <h1 class="chapter-heading">Chapter One<br>‘The Silver Harpoon’</h1>
-
     <p>Everybody in Mouseville knew Ricer and his gang. They left a trail of broken windows, upturned dustbins, and graffiti-covered walls wherever they went. Stallholders hastily covered their wares if the hoodlum rodents showed their roguish faces at the market, and even the scruffy seagulls flapped off with an uneasy squawk when Ricer’s Micers sauntered out onto the docks.</p>
-
-
     <p>The rest of the gang suddenly went very quiet indeed.</p>
-
     <p>“Why, what business do we have there?” Dodum asked, rubbing his head.</p>
-
     <p>“I had a little disagreement with the landlord a while back. So now we’re going to hit him where it hurts.”</p>
-
     <p>“Are you planning something big?” Dodum asked, scratching the inside of his left ear and sniffing his claw.</p>
-
     <p>“You won’t be bored, I can promise that,” Ricer said mysteriously.</p>
-	<img src=Image path alt="something">
+    <div class="paragraph-container">
         <p>
             All the while, a little mouse in a striped sweater and baggy trousers had been hiding nearby behind a pile of crates. He’d been listening carefully to everything Ricer had said, and this, he thought, was his big chance. He waited for the gang to disappear around the corner and then hurried after them. His stomach growled with hunger. He rummaged in his pockets as he ran along, hoping to find something to munch on, but was disappointed to discover that, as usual, they were empty.
         </p>
-        
+        <img src=Image path alt="something">
+    </div>
     <p>“If Ricer let me join, I’d always have something to eat,” he thought, slipping for a moment into idle reverie, but then he clenched his teeth. “What am I saying, I will join their gang! I’ll show that lot what I’m made of! And then, when I’m bigger, I’ll be the one in charge!”</p>
 </body>
 </html>
-
 Note:
 If the requirement is to add the image so that it takes half of the page after the line then you can use these values
 .image-container {
             text-align: center; /* Center the image */
             margin: 1em 0; /* Add some margin around the image */
         }
-
 .image-container img {
             width: 600px; /* Set the image to take up to half a page */
             height: auto; /* Maintain aspect ratio */
 	        object-fit: contain;
             aspect-ratio: auto; 
         }
-
 And in case of a full page image:
 .image-container {
             text-align: center; /* Center the image */
             margin: 1em 0; /* Add some margin around the image */
         }
-
 .image-container img {
             width: 100%; /* Set the image to take up the full width */
             height: auto; /* Maintain aspect ratio */
             object-fit: contain;
             margin: 5em 0;
         }
-
 Return only the Html text and nothing else. Do not write ```, start directly from <!DOCTYPE html>.
 In case of multiple images make sure to add both the paragraph and image containers for all the images in the style tag and finish the entire text.
 Here is the requirement: <<img_descp>>
 Image path: <<path>>
-Orientation: <<orient>>
 HTML: <<html>>
     """
-    match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
-    if match:
-        file_id = match.group(1)
-        # Create the new link
-        path = f"https://drive.google.com/thumbnail?id={file_id}"
-    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", path).replace("<<html>>", html_text)
+    # match = re.search(r"/d/([a-zA-Z0-9_-]+)", image_path)
+    # if match:
+    #     file_id = match.group(1)
+    #     # Create the new link
+    #     path = f"https://drive.google.com/thumbnail?id={file_id}"
+    prompt = prompt_template.replace("<<img_descp>>", image_desc).replace("<<path>>", image_path).replace("<<html>>", html_text)
     chat_completion = client.chat.completions.create(
         messages=[
             {
