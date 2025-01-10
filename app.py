@@ -2,7 +2,7 @@ import streamlit as st
 import nest_asyncio
 from playwright.async_api import async_playwright
 import asyncio
-from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers, image_html
+from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers
 from concurrent.futures import ThreadPoolExecutor
 from reportlab.pdfgen import canvas
 import os
@@ -10,9 +10,6 @@ from PyPDF2 import PdfMerger
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from bs4 import BeautifulSoup
-import uuid
-from io import BytesIO
-from PIL import Image 
 
 # Setup Google Sheets API client using credentials from secrets
 def get_gspread_client():
@@ -117,7 +114,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     # Function to convert HTML to PDF with Playwright
     nest_asyncio.apply()
 
-    async def html_to_pdf_with_margins(html_file, output_pdf, orientation):
+    async def html_to_pdf_with_margins(html_file, output_pdf):
         async with async_playwright() as p:
             browser = await p.chromium.launch()
             page = await browser.new_page()
@@ -126,31 +123,18 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 html_content = file.read()
 
             await page.set_content(html_content, wait_until='networkidle')
-            if orientation == 'Landscape':
-                pdf_options = {
-                    'path': output_pdf,
-                    'format': 'A4',
-                    'margin': {
-                        'top': '85px',
-                        'bottom': '60px',
-                        'left': '70px',
-                        'right': '40px'
-                    },
-                    'print_background': True,
-                    'landscape': True
-                }
-            else:
-                pdf_options = {
-                    'path': output_pdf,
-                    'format': 'A4',
-                    'margin': {
-                        'top': '85px',
-                        'bottom': '60px',
-                        'left': '70px',
-                        'right': '40px'
-                    },
-                    'print_background': True,
-                }
+
+            pdf_options = {
+                'path': output_pdf,
+                'format': 'A4',
+                'margin': {
+                    'top': '85px',
+                    'bottom': '60px',
+                    'left': '70px',
+                    'right': '40px'
+                },
+                'print_background': True
+            }
 
             await page.pdf(**pdf_options)
             await browser.close()
@@ -174,38 +158,17 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         word_count = len(words)
         
         return word_count
-    
+
     # Dynamic list to store chapter inputs
-    os.system('playwright install')
     chapter_texts = []
     num_chapters = st.number_input('How many chapters do you want to add?', min_value=1, max_value=10, step=1)
-    images = []
-    image_description = []
+
     for i in range(num_chapters):
-        # Chapter text input
-        chapter_text = st.text_area(f'Enter the Chapter {i+1} text:', key=f'chapter_text_{i}')
+        chapter_text = st.text_area(f'Enter the Chapter {i+1} text:')
         chapter_texts.append(chapter_text)
-    
-        # Word count display
         word_count = len(chapter_text.split()) if chapter_text else 0
         st.write(f'Word count: {word_count}')
-    
-        # Number of images for the chapter
-        num_images = st.number_input(f'How many images for Chapter {i+1}?', min_value=1, max_value=10, step=1, key=f'num_images_{i}')
-    
-        # List to store images for the current chapter
-        chp_image = []
-        img_descp = []
-        for j in range(num_images):
-            img_link = st.text_input(f"Enter Google drive link of Image {j+1} for Chapter {i+1}", key=f'img_link_{i}_{j}')
-            temp_desc = st.text_input(f'Enter the Image {j+1} description:', key=f'img_desc_{i}_{j}')
-            chp_image.append(img_link)
-            img_descp.append(temp_desc)
-    
-        image_description.append(img_descp)
-        # Append chapter images to images list
-        images.append(chp_image)
-        
+
     author_name = st.text_input('Enter the Author Name:')
     book_name = st.text_input('Enter the Book Name:')
     font_size = st.text_input('Enter the Font Size')
@@ -223,8 +186,6 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     First_page_no = st.number_input('Enter the First Page Number:', min_value=0, max_value=1000, step=1)
     options = ['Left', 'Right']
     first_page_position = st.selectbox('Select First Page Position:', options)
-    orient = ['Portrait', 'Landscape']
-    orientation = st.selectbox('Select Orientation', orient)
 
     # Button to generate PDF
     if st.button("Generate PDF"):
@@ -236,19 +197,15 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         wc = []
         for idx, chapter_text in enumerate(chapter_texts):
             response = get_response(chapter_text, font_size, line_height)
-            if idx < len(images) and idx < len(image_description):  # Ensure images and descriptions exist for the current chapter
-                for img_idx, (image_path, image_desc) in enumerate(zip(images[idx], image_description[idx])):
-                    # Update the response iteratively with each image and description
-                    response = image_html(response, image_path, image_desc, orientation)  # Update `response` directly
-            st.write(response)
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
+
             main_pdf = f'out_{idx+1}.pdf'
             
             # Run the function to generate the main PDF
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(html_to_pdf_with_margins(html_pth, main_pdf, orientation))
+            loop.run_until_complete(html_to_pdf_with_margins(html_pth, main_pdf))
 
             total_pages = get_pdf_page_count(main_pdf)
             overlay_pdf = f"overlay_{idx+1}.pdf"
@@ -284,4 +241,6 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 file_name=merged_pdf_path,
                 mime="application/pdf"
             )
-        st.write(wc)
+        st.write("### Chapter-wise Word Count")
+        for idx, count in enumerate(wc, start=1):
+            st.write(f"Chapter {idx}: {count} words")
