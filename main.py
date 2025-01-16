@@ -1825,10 +1825,10 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
-	lan = 'en' if language == "English" else 'hi'
-        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
+	  lan = 'en' if language == "English" else 'hi'
+          prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_1 = client.chat.completions.create(
+          chat_completion_1 = client.chat.completions.create(
             messages=[
                 {
                     "role": "user",
@@ -1839,10 +1839,10 @@ This is the sample HTML : <!DOCTYPE html>
             temperature=0
         )
 
-        response_1 = chat_completion_1.choices[0].message.content
+          response_1 = chat_completion_1.choices[0].message.content
 
         # Process the second part with a modified prompt (no HTML headers)
-        prompt_template_2 = """
+          prompt_template_2 = """
         You are an expert book formatter.
         Continue formatting the book chapter into HTML following the same styles as before. Do not include the <!DOCTYPE html> declaration, <html>, <head>, or <body> tags. Start directly with the paragraph tags and ensure consistency in formatting with the previous part.
         Font size = <<fontsize>>
@@ -1868,10 +1868,10 @@ This is the sample HTML : <!DOCTYPE html>
         Here is the continuation of the chapter:
         <<CHAPTER_TEXT>>
         """
-	lan = 'en' if language == "English" else 'hi'
-        prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
+	  lan = 'en' if language == "English" else 'hi'
+          prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_2 = client.chat.completions.create(
+          chat_completion_2 = client.chat.completions.create(
             messages=[
                 {
                     "role": "user",
@@ -1882,26 +1882,26 @@ This is the sample HTML : <!DOCTYPE html>
             temperature=0
         )
 
-        response_2 = chat_completion_2.choices[0].message.content
+          response_2 = chat_completion_2.choices[0].message.content
 
         # Now, merge the two responses
         # Extract the <body> content from the first response and append the second response
 
         # Find the closing </body> and </html> tags in the first response
-        body_close_index = response_1.rfind("</body>")
-        html_close_index = response_1.rfind("</html>")
+          body_close_index = response_1.rfind("</body>")
+          html_close_index = response_1.rfind("</html>")
 
-        if body_close_index != -1:
+          if body_close_index != -1:
             # Insert the second response before the closing </body> tag
             merged_html = response_1[:body_close_index] + "\n" + response_2 + "\n" + response_1[body_close_index:]
-        elif html_close_index != -1:
+          elif html_close_index != -1:
             # Insert before </html> if </body> is not found
             merged_html = response_1[:html_close_index] + "\n" + response_2 + "\n" + response_1[html_close_index:]
-        else:
+          else:
             # If no closing tags are found, simply concatenate
             merged_html = response_1 + "\n" + response_2
 
-        return merged_html
+          return merged_html
     
   else:
         # If the chapter exceeds the limit, split into two parts
