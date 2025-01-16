@@ -1825,7 +1825,7 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
-	      lan = 'en' if language == "English" else 'hi'
+	lan = 'en' if language == "English" else 'hi'
         prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_1 = client.chat.completions.create(
@@ -1868,7 +1868,7 @@ This is the sample HTML : <!DOCTYPE html>
         Here is the continuation of the chapter:
         <<CHAPTER_TEXT>>
         """
-	      lan = 'en' if language == "English" else 'hi'
+	lan = 'en' if language == "English" else 'hi'
         prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_2 = client.chat.completions.create(
@@ -2802,7 +2802,7 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
-	      lan = 'en' if language == "English" else 'hi'
+	lan = 'en' if language == "English" else 'hi'
         prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_1 = client.chat.completions.create(
@@ -2845,7 +2845,7 @@ This is the sample HTML : <!DOCTYPE html>
       Here is the continuation of the chapter:
       <<CHAPTER_TEXT>>
       """
-	      lan = 'en' if language == "English" else 'hi'
+	lan = 'en' if language == "English" else 'hi'
         prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_2 = client.chat.completions.create(
@@ -2888,7 +2888,7 @@ This is the sample HTML : <!DOCTYPE html>
       Here is the continuation of the chapter:
       <<CHAPTER_TEXT>>
       """
-	      lan = 'en' if language == "English" else 'hi'
+	lan = 'en' if language == "English" else 'hi'
         prompt_3 = prompt_template_3.replace("<<CHAPTER_TEXT>>", third_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_3 = client.chat.completions.create(
