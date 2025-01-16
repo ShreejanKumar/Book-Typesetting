@@ -186,6 +186,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     First_page_no = st.number_input('Enter the First Page Number:', min_value=0, max_value=1000, step=1)
     options = ['Left', 'Right']
     first_page_position = st.selectbox('Select First Page Position:', options)
+    language = st.selectbox('Select Language', ['English','Hindi'])
 
     # Button to generate PDF
     if st.button("Generate PDF"):
@@ -196,7 +197,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         current_position = first_page_position  # "Right" or "Left" based on input
         wc = []
         for idx, chapter_text in enumerate(chapter_texts):
-            response = get_response(chapter_text, font_size, line_height)
+            response = get_response(chapter_text, font_size, line_height, language)
             html_pth = save_response(response)
             wc.append(get_word_count(html_pth))
 
