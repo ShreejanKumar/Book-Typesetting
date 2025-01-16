@@ -11,7 +11,7 @@ from reportlab.pdfgen import canvas
 from pypdf import PdfReader, PdfWriter
 
 
-def get_response(chapter, font_size, lineheight):
+def get_response(chapter, font_size, lineheight, language):
   # Set up OpenAI API client
     
   client = OpenAI(api_key = st.secrets["Openai_api"])
@@ -471,7 +471,7 @@ Later in the night; he ended up sleeping with a slick woman who he’d met at th
 hours ago. The next morning, the memory of the night had almost vanished, but the hole in
 his heart had widened.
 This is the sample HTML : <!DOCTYPE html>
-<html lang="en">
+<html lang="<<lang>>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -912,7 +912,8 @@ This is the sample HTML : <!DOCTYPE html>
     <p>“Arnav please,
 
     Here is the target chapter: <<CHAPTER_TEXT>>"""
-    prompt = prompt_template.replace("<<CHAPTER_TEXT>>", chapter).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
+    lan = 'en' if language == "English" else 'hi'
+    prompt = prompt_template.replace("<<CHAPTER_TEXT>>", chapter).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
     chat_completion = client.chat.completions.create(
             messages=[
                 {
@@ -1382,7 +1383,7 @@ Later in the night; he ended up sleeping with a slick woman who he’d met at th
 hours ago. The next morning, the memory of the night had almost vanished, but the hole in
 his heart had widened.
 This is the sample HTML : <!DOCTYPE html>
-<html lang="en">
+<html lang="<<lang>>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1824,7 +1825,8 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
-        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
+        lan = 'en' if language == "English" else 'hi'
+        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_1 = client.chat.completions.create(
             messages=[
@@ -1845,6 +1847,7 @@ This is the sample HTML : <!DOCTYPE html>
         Continue formatting the book chapter into HTML following the same styles as before. Do not include the <!DOCTYPE html> declaration, <html>, <head>, or <body> tags. Start directly with the paragraph tags and ensure consistency in formatting with the previous part.
         Font size = <<fontsize>>
         Line height = <<lineheight>>
+        <html lang="<<lang>>">
         Include these features in html:
         1. Paragraph Formatting
         Indentation: Use a small indent (about 1 em) for the first line of each paragraph, or opt for a larger spacing between paragraphs if not using indentation.
@@ -1865,7 +1868,8 @@ This is the sample HTML : <!DOCTYPE html>
         Here is the continuation of the chapter:
         <<CHAPTER_TEXT>>
         """
-        prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
+        lan = 'en' if language == "English" else 'hi'
+        prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_2 = client.chat.completions.create(
             messages=[
@@ -2356,7 +2360,7 @@ Later in the night; he ended up sleeping with a slick woman who he’d met at th
 hours ago. The next morning, the memory of the night had almost vanished, but the hole in
 his heart had widened.
 This is the sample HTML : <!DOCTYPE html>
-<html lang="en">
+<html lang="<<lang>>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2798,7 +2802,8 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
-        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
+        lan = 'en' if language == "English" else 'hi'
+        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_1 = client.chat.completions.create(
           messages=[
@@ -2819,6 +2824,7 @@ This is the sample HTML : <!DOCTYPE html>
       Continue formatting the book chapter into HTML following the same styles as before. Do not include the <!DOCTYPE html> declaration, <html>, <head>, or <body> tags. Start directly with the paragraph tags and ensure consistency in formatting with the previous part.
       Font size = <<fontsize>>
       Line height = <<lineheight>>
+      <html lang="<<lang>>">
       Include these features in html:
       1. Paragraph Formatting
       Indentation: Use a small indent (about 1 em) for the first line of each paragraph, or opt for a larger spacing between paragraphs if not using indentation.
@@ -2839,6 +2845,7 @@ This is the sample HTML : <!DOCTYPE html>
       Here is the continuation of the chapter:
       <<CHAPTER_TEXT>>
       """
+        lan = 'en' if language == "English" else 'hi'
         prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
 
         chat_completion_2 = client.chat.completions.create(
@@ -2860,6 +2867,7 @@ This is the sample HTML : <!DOCTYPE html>
       Continue formatting the book chapter into HTML following the same styles as before. Do not include the <!DOCTYPE html> declaration, <html>, <head>, or <body> tags. Start directly with the paragraph tags and ensure consistency in formatting with the previous part.
       Font size = <<fontsize>>
       Line height = <<lineheight>>
+      <html lang="<<lang>>">
       Include these features in html:
       1. Paragraph Formatting
       Indentation: Use a small indent (about 1 em) for the first line of each paragraph, or opt for a larger spacing between paragraphs if not using indentation.
@@ -2880,7 +2888,8 @@ This is the sample HTML : <!DOCTYPE html>
       Here is the continuation of the chapter:
       <<CHAPTER_TEXT>>
       """
-        prompt_3 = prompt_template_3.replace("<<CHAPTER_TEXT>>", third_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
+        lan = 'en' if language == "English" else 'hi'
+        prompt_3 = prompt_template_3.replace("<<CHAPTER_TEXT>>", third_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
         chat_completion_3 = client.chat.completions.create(
           messages=[
@@ -2903,14 +2912,14 @@ This is the sample HTML : <!DOCTYPE html>
         html_close_index = response_1.rfind("</html>")
 
         if body_close_index != -1:
-		# Insert the second response before the closing </body> tag
-          	merged_html = response_1[:body_close_index] + "\n" + response_2 + "\n" + response_3 + "\n" + response_1[body_close_index:]
+          # Insert the second response before the closing </body> tag
+          merged_html = response_1[:body_close_index] + "\n" + response_2 + "\n" + response_3 + "\n" + response_1[body_close_index:]
         elif html_close_index != -1:
-		# Insert before </html> if </body> is not found
-          	merged_html = response_1[:html_close_index] + "\n" + response_2 + "\n" + response_3 + "\n" + response_1[html_close_index:]
+          # Insert before </html> if </body> is not found
+          merged_html = response_1[:html_close_index] + "\n" + response_2 + "\n" + response_3 + "\n" + response_1[html_close_index:]
         else:
-          	# If no closing tags are found, simply concatenate
-          	merged_html = response_1 + "\n" + response_2 + "\n" + response_3
+          # If no closing tags are found, simply concatenate
+          merged_html = response_1 + "\n" + response_2 + "\n" + response_3
 
         return merged_html
 
