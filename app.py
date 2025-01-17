@@ -125,16 +125,17 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             await page.set_content(html_content, wait_until='networkidle')
 
             pdf_options = {
-                'path': output_pdf,
-                'format': 'A4',
-                'margin': {
-                    'top': '85px',
-                    'bottom': '60px',
-                    'left': '70px',
-                    'right': '40px'
-                },
-                'print_background': True
-            }
+            'path': output_pdf,
+            'width': '130mm',  # Custom width
+            'height': '197mm',  # Custom height
+            'margin': {
+                'top': '17mm',
+                'bottom': '13mm',
+                'left': '17mm',
+                'right': '12mm'
+            },
+            'print_background': True
+        }
 
             await page.pdf(**pdf_options)
             await browser.close()
