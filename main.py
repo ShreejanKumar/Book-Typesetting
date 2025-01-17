@@ -9,7 +9,7 @@ import PyPDF2
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 from pypdf import PdfReader, PdfWriter
-
+from reportlab.lib.units import mm
 
 def get_response(chapter, font_size, lineheight, language):
   # Set up OpenAI API client
@@ -2965,7 +2965,7 @@ def get_pdf_page_count(pdf_file):
     
 def create_overlay_pdf(overlay_pdf, total_pages, starting_page_number, book_name, author_name, font, current_position):
     c = canvas.Canvas(overlay_pdf, pagesize=A4)
-    width, height = A4
+    width, height = 130 * mm, 197 * mm  # Correctly converting mm to points
 
     def draw_header_footer(page_number, position):
         c.setFont(font, 12)
