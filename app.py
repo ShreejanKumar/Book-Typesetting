@@ -123,19 +123,22 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                 html_content = file.read()
 
             await page.set_content(html_content, wait_until='networkidle')
-
+            page_size = {
+                'width': '130mm',
+                'height': '197mm'
+            }
             pdf_options = {
-            'path': output_pdf,
-            'width': '130mm',  # Custom width
-            'height': '197mm',  # Custom height
-            'margin': {
-                'top': '17mm',
-                'bottom': '13mm',
-                'left': '17mm',
-                'right': '12mm'
-            },
-            'print_background': True
-        }
+                    'path': output_pdf,
+                    'width': page_size['width'],
+                    'height': page_size['height'],
+                    'margin': {
+                        'top': '60px',
+                        'bottom': '40px',
+                        'left': '15px',
+                        'right': '1px'
+                    },
+                    'print_background': True,
+                }
 
             await page.pdf(**pdf_options)
             await browser.close()
