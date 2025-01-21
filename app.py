@@ -143,6 +143,32 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     # Streamlit UI
     st.title("Chapter PDF Generator")
     
+    def calculate_word_count(chapter_text):
+        if not chapter_text:
+            return 0
+        
+        # Initialize variables
+        in_word = False
+        word_count = 0
+    
+        for char in chapter_text:
+            # Check if the character is alphanumeric using ASCII
+            if char.isalnum():  # Equivalent to checking 'a-z', 'A-Z', '0-9'
+                if not in_word:
+                    # Start of a new word
+                    in_word = True
+            else:
+                if in_word:
+                    # End of a word
+                    word_count += 1
+                    in_word = False
+        
+        # Account for the last word if the string ends with an alphanumeric character
+        if in_word:
+            word_count += 1
+    
+        return word_count
+    
     def get_word_count(html_file_path):
         # Read the HTML file
         with open(html_file_path, 'r', encoding='utf-8') as file:
@@ -154,10 +180,26 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         # Extract text from the HTML
         text = soup.get_text()
         
-        # Split the text into words and count them
-        words = text.split()
-        word_count = len(words)
-        
+        # Calculate word count using ASCII logic
+        in_word = False
+        word_count = 0
+    
+        for char in text:
+            # Check if the character is alphanumeric
+            if char.isalnum():
+                if not in_word:
+                    # Start of a new word
+                    in_word = True
+            else:
+                if in_word:
+                    # End of a word
+                    word_count += 1
+                    in_word = False
+    
+        # Account for the last word if the string ends with an alphanumeric character
+        if in_word:
+            word_count += 1
+    
         return word_count
 
     # Dynamic list to store chapter inputs
@@ -167,7 +209,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     for i in range(num_chapters):
         chapter_text = st.text_area(f'Enter the Chapter {i+1} text:')
         chapter_texts.append(chapter_text)
-        word_count = len(chapter_text.split()) if chapter_text else 0
+        word_count = calculate_word_count(chapter_text)
         st.write(f'Word count: {word_count}')
 
     author_name = st.text_input('Enter the Author Name:')
