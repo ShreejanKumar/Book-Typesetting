@@ -183,7 +183,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             soup.title.decompose()
         # Extract text from the HTML
         text = soup.get_text()
-        st.write(text)
+        # st.write(text)
         
         # Calculate word count using ASCII logic
         in_word = False
