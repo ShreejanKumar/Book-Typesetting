@@ -487,7 +487,7 @@ This is the sample HTML : <!DOCTYPE html>
 
 	h1.chapter-heading {
             text-align: center;
-            margin-top: 25vh; /* Center the heading vertically on the page */
+            margin-top: 20vh; /* Center the heading vertically on the page */
             margin-bottom: 10rem;
             page-break-before: always; /* Start on a new page */
 	}
@@ -1399,7 +1399,7 @@ This is the sample HTML : <!DOCTYPE html>
 
 	h1.chapter-heading {
             text-align: center;
-            margin-top: 25vh; /* Center the heading vertically on the page */
+            margin-top: 20vh; /* Center the heading vertically on the page */
             margin-bottom: 10rem;
             page-break-before: always; /* Start on a new page */
 	}
@@ -2376,7 +2376,7 @@ This is the sample HTML : <!DOCTYPE html>
 
 	h1.chapter-heading {
             text-align: center;
-            margin-top: 25vh; /* Center the heading vertically on the page */
+            margin-top: 20vh; /* Center the heading vertically on the page */
             margin-bottom: 10rem;
             page-break-before: always; /* Start on a new page */
 	}
