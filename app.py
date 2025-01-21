@@ -179,10 +179,11 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         
         # Parse the HTML content using BeautifulSoup
         soup = BeautifulSoup(html_content, 'html.parser')
-        
+        if soup.title:
+            soup.title.decompose()
         # Extract text from the HTML
         text = soup.get_text()
-        st.write(soup)
+        st.write(text)
         
         # Calculate word count using ASCII logic
         in_word = False
