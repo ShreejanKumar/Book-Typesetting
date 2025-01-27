@@ -2976,12 +2976,12 @@ def create_overlay_pdf(overlay_pdf, total_pages, starting_page_number, book_name
             c.drawCentredString(width / 2, footer_y, f'{page_number}')
         elif position == "Right":
             # Right-side pages: Draw header on the right and page number at the right
-            c.drawCentredString(width / 2, height - 40, book_name)
-            c.drawString(width - 84, height - 40, f'{page_number}')  # Adjusted x-coordinate for gap
+            c.drawCentredString(width / 2, height - 35, book_name)
+            c.drawString(width - 84, height - 35, f'{page_number}')  # Adjusted x-coordinate for gap
         elif position == "Left":
             # Left-side pages: Draw header on the left and page number at the left
-            c.drawCentredString(width / 2, height - 40, author_name)
-            c.drawString(62, height - 40, f'{page_number}')  # Adjusted x-coordinate for gap
+            c.drawCentredString(width / 2, height - 35, author_name)
+            c.drawString(62, height - 35, f'{page_number}')  # Adjusted x-coordinate for gap
 
     # Create pages for the overlay
     for i in range(total_pages):
