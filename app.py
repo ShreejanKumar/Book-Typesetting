@@ -251,7 +251,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             word_count = get_word_count(html_pth)
     
             main_pdf = f'out_{idx+1}.pdf'
-            await html_to_pdf_with_margins(html_pth, main_pdf, orientation)
+            await html_to_pdf_with_margins(html_pth, main_pdf)
     
             total_pages = get_pdf_page_count(main_pdf)
             overlay_pdf = f"overlay_{idx+1}.pdf"
