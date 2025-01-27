@@ -244,32 +244,46 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         # Set the initial page position for the first chapter
         current_position = first_page_position  # "Right" or "Left" based on input
         wc = []
-        for idx, chapter_text in enumerate(chapter_texts):
-            response = get_response(chapter_text, font_size, line_height, language)
+        async def process_chapter(idx, chapter_text):
+            # Get response asynchronously
+            response = await get_response(chapter_text, font_size, line_height, language)
             html_pth = save_response(response)
-            wc.append(get_word_count(html_pth))
-
+            word_count = get_word_count(html_pth)
+    
             main_pdf = f'out_{idx+1}.pdf'
-            
-            # Run the function to generate the main PDF
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(html_to_pdf_with_margins(html_pth, main_pdf))
-
+            await html_to_pdf_with_margins(html_pth, main_pdf, orientation)
+    
             total_pages = get_pdf_page_count(main_pdf)
             overlay_pdf = f"overlay_{idx+1}.pdf"
-            
-            # Create the overlay PDF with continuous page numbers
-            current_position = create_overlay_pdf(overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, current_position)
-            
+    
+            # Create overlay PDF and calculate current position
+            updated_position = create_overlay_pdf(
+                overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, current_position
+            )
+    
             final_pdf = f'final_{idx+1}.pdf'
-            final_pdfs.append(final_pdf)
-            
-            # Overlay the headers and footers
             overlay_headers_footers(main_pdf, overlay_pdf, final_pdf)
-            
-            # Update current_page_number for the next chapter
+    
+            return final_pdf, total_pages, updated_position, word_count
+
+        
+        async def process_all_chapters():
+            tasks = [
+                process_chapter(idx, chapter_text)
+                for idx, chapter_text in enumerate(chapter_texts)
+            ]
+            return await asyncio.gather(*tasks)
+
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        results = loop.run_until_complete(process_all_chapters())
+        
+        for final_pdf, total_pages, updated_position, word_count in results:
+            final_pdfs.append(final_pdf)
             current_page_number += total_pages
+            current_position = updated_position
+            wc.append(word_count)
         
         # Merge all the final PDFs into one
         merger = PdfMerger()
