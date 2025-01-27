@@ -11,7 +11,7 @@ from reportlab.pdfgen import canvas
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.units import mm
 
-def get_response(chapter, font_size, lineheight, language):
+async def get_response(chapter, font_size, lineheight, language):
   # Set up OpenAI API client
     
   client = OpenAI(api_key = st.secrets["Openai_api"])
@@ -914,7 +914,7 @@ This is the sample HTML : <!DOCTYPE html>
     Here is the target chapter: <<CHAPTER_TEXT>>"""
     lan = 'en' if language == "English" else 'hi'
     prompt = prompt_template.replace("<<CHAPTER_TEXT>>", chapter).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
-    chat_completion = client.chat.completions.create(
+    chat_completion = await client.chat.completions.acreate(
             messages=[
                 {
                     "role": "user",
@@ -1828,7 +1828,7 @@ This is the sample HTML : <!DOCTYPE html>
         lan = 'en' if language == "English" else 'hi'
         prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_1 = client.chat.completions.create(
+        chat_completion_1 = await client.chat.completions.acreate(
             messages=[
                 {
                     "role": "user",
@@ -1871,7 +1871,7 @@ This is the sample HTML : <!DOCTYPE html>
         lan = 'en' if language == "English" else 'hi'
         prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_2 = client.chat.completions.create(
+        chat_completion_2 = await client.chat.completions.acreate(
             messages=[
                 {
                     "role": "user",
@@ -2805,7 +2805,7 @@ This is the sample HTML : <!DOCTYPE html>
         lan = 'en' if language == "English" else 'hi'
         prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_1 = client.chat.completions.create(
+        chat_completion_1 = await client.chat.completions.acreate(
           messages=[
               {
                   "role": "user",
@@ -2848,7 +2848,7 @@ This is the sample HTML : <!DOCTYPE html>
         lan = 'en' if language == "English" else 'hi'
         prompt_2 = prompt_template_2.replace("<<CHAPTER_TEXT>>", second_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val)
 
-        chat_completion_2 = client.chat.completions.create(
+        chat_completion_2 = await client.chat.completions.acreate(
           messages=[
               {
                   "role": "user",
@@ -2891,7 +2891,7 @@ This is the sample HTML : <!DOCTYPE html>
         lan = 'en' if language == "English" else 'hi'
         prompt_3 = prompt_template_3.replace("<<CHAPTER_TEXT>>", third_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
 
-        chat_completion_3 = client.chat.completions.create(
+        chat_completion_3 = await client.chat.completions.acreate(
           messages=[
               {
                   "role": "user",
