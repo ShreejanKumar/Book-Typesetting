@@ -268,7 +268,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         asyncio.set_event_loop(loop)
         results = loop.run_until_complete(process_all_chapters())
         
-        for main_pdf, word_count in results:
+        for idx, (main_pdf, word_count) in enumerate(results):
             total_pages = get_pdf_page_count(main_pdf)
             overlay_pdf = f"overlay_{idx+1}.pdf"
     
