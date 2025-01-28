@@ -251,20 +251,9 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             word_count = get_word_count(html_pth)
     
             main_pdf = f'out_{idx+1}.pdf'
-            await html_to_pdf_with_margins(html_pth, main_pdf)
+            await html_to_pdf_with_margins(html_pth, main_pdf, orientation)
     
-            total_pages = get_pdf_page_count(main_pdf)
-            overlay_pdf = f"overlay_{idx+1}.pdf"
-    
-            # Create overlay PDF and calculate current position
-            updated_position = create_overlay_pdf(
-                overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, current_position
-            )
-    
-            final_pdf = f'final_{idx+1}.pdf'
-            overlay_headers_footers(main_pdf, overlay_pdf, final_pdf)
-    
-            return final_pdf, total_pages, updated_position, word_count
+            return main_pdf, word_count
 
         
         async def process_all_chapters():
@@ -279,11 +268,21 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         asyncio.set_event_loop(loop)
         results = loop.run_until_complete(process_all_chapters())
         
-        for final_pdf, total_pages, updated_position, word_count in results:
+        for main_pdf, word_count in results:
+            total_pages = get_pdf_page_count(main_pdf)
+            overlay_pdf = f"overlay_{idx+1}.pdf"
+    
+            # Create overlay PDF and calculate current position
+            current_position = create_overlay_pdf(
+                overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, current_position
+            )
+    
+            final_pdf = f'final_{idx+1}.pdf'
             final_pdfs.append(final_pdf)
+            overlay_headers_footers(main_pdf, overlay_pdf, final_pdf)
             current_page_number += total_pages
-            current_position = updated_position
-            wc.append(word_count)
+            wc.append(word_count)        
+
         
         # Merge all the final PDFs into one
         merger = PdfMerger()
