@@ -133,7 +133,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
                     'height': page_size['height'],
                     'margin': {
                         'top': '70px',
-                        'bottom': '40px',
+                        'bottom': '50px',
                         'left': '15px',
                         'right': '1px'
                     },
