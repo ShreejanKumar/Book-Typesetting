@@ -42,6 +42,8 @@ Keep this in mind : Left and Right margins are minimum.
 11. No need to bold names and use italics for even single words in sentences that are in other languages like Hindi or spanish.
 12. The chapter heading should be centrally aligned and start on one fourth level of the new page with a margin on the top.
 13. There should be some additional space between the chapter heading and the first paragraph.
+14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
+15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
 
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
@@ -954,6 +956,8 @@ Keep this in mind : Left and Right margins are minimum.
 11. No need to bold names and use italics for even single words in sentences that are in other languages like Hindi or spanish.
 12. The chapter heading should be centrally aligned and start on one fourth level of the new page with a margin on the top.
 13. There should be some additional space between the chapter heading and the first paragraph.
+14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
+15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
 
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
@@ -1931,6 +1935,8 @@ Keep this in mind : Left and Right margins are minimum.
 11. No need to bold names and use italics for even single words in sentences that are in other languages like Hindi or spanish.
 12. The chapter heading should be centrally aligned and start on one fourth level of the new page with a margin on the top.
 13. There should be some additional space between the chapter heading and the first paragraph.
+14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
+15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
 
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
@@ -2972,7 +2978,7 @@ def create_overlay_pdf(overlay_pdf, total_pages, starting_page_number, book_name
 
         if page_number == starting_page_number:
             # First page of the chapter: Draw page number at the bottom center
-            footer_y = 30  # Adjust this value to match the bottom text's baseline
+            footer_y = 25  # Adjust this value to match the bottom text's baseline
             c.drawCentredString(width / 2, footer_y, f'{page_number}')
         elif position == "Right":
             # Right-side pages: Draw header on the right and page number at the right
