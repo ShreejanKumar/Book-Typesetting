@@ -234,7 +234,7 @@ This is the sample HTML : <!DOCTYPE html>
     return response
 
   elif(len(chapter) > max_chars and len(chapter) <= 70000):
-	print("2")
+	      print("2")
         # If the chapter exceeds the limit, split into two parts
         split_pos = chapter.rfind('.', 0, max_chars)
         first_part = chapter[:split_pos + 1]
