@@ -238,6 +238,7 @@ This is the sample HTML : <!DOCTYPE html>
         first_part = chapter[:split_pos + 1]
         second_part = chapter[split_pos + 1:]
         st.write(first_part)
+        st.write("Second Part:")
         st.write(second_part)
 
         # Process the first part normally
