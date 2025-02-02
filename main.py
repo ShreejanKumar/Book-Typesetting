@@ -19,7 +19,7 @@ async def get_response(chapter, font_size, lineheight, language):
   line_height_val = str(lineheight)
   max_chars = 35000
   # Set up OpenAI model and prompt
-  model="gpt-4o-mini-2024-07-18"
+  model="gpt-4o"
   # Split the chapter into two parts based on character count
   if len(chapter) <= max_chars:	  
     # If the chapter is within the limit, process normally
