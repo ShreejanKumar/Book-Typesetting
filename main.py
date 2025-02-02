@@ -21,8 +21,7 @@ async def get_response(chapter, font_size, lineheight, language):
   # Set up OpenAI model and prompt
   model="gpt-4o-mini-2024-07-18"
   # Split the chapter into two parts based on character count
-  if len(chapter) <= max_chars:
-    st.write("1")	  
+  if len(chapter) <= max_chars:	  
     # If the chapter is within the limit, process normally
     prompt_template = """You are an expert book formatter.
 This is a book chapter. your job is to output a typesetted file (USING HTML) which can be converted to a pdf book. So ensure that this book is formatted beautifully following all rules of formatting books. The book should be able to be read easily in a web browser. Include these features in html:
@@ -231,6 +230,7 @@ This is the sample HTML : <!DOCTYPE html>
             temperature=0
         )
     response = chat_completion.choices[0].message.content
+    st.write(response)
     return response
 
   elif(len(chapter) > max_chars and len(chapter) <= 70000):
