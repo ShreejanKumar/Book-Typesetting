@@ -44,7 +44,7 @@ Keep this in mind : Left and Right margins are minimum.
 13. There should be some additional space between the chapter heading and the first paragraph.
 14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
 15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
-
+16. Make sure to include the entire text given as input in the html. You can check this by checking the last line of the response and the input. Dont write anything about this in the repsonse.
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
 Excerpts from Dhruv&#39;s journal:
