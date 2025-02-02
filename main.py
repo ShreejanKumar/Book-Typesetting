@@ -230,7 +230,6 @@ This is the sample HTML : <!DOCTYPE html>
             temperature=0
         )
     response = chat_completion.choices[0].message.content
-    st.write(response)
     return response
 
   elif(len(chapter) > max_chars and len(chapter) <= 70000):
