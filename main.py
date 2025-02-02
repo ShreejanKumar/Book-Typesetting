@@ -237,6 +237,8 @@ This is the sample HTML : <!DOCTYPE html>
         split_pos = chapter.rfind('.', 0, max_chars)
         first_part = chapter[:split_pos + 1]
         second_part = chapter[split_pos + 1:]
+        st.write(first_part)
+        st.write(second_part)
 
         # Process the first part normally
         prompt_template_1 = """
