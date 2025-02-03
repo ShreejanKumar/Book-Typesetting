@@ -13,15 +13,14 @@ from reportlab.lib.units import mm
 
 async def get_response(chapter, font_size, lineheight, language):
   # Set up OpenAI API client
-    
   client = AsyncOpenAI(api_key = st.secrets["Openai_api"])
   font_size_px = f"{font_size}px"
   line_height_val = str(lineheight)
-  max_chars = 18950
+  max_chars = 35000
   # Set up OpenAI model and prompt
   model="gpt-4o-mini-2024-07-18"
   # Split the chapter into two parts based on character count
-  if len(chapter) <= max_chars:	  
+  if len(chapter) <= max_chars:
     # If the chapter is within the limit, process normally
     prompt_template = """You are an expert book formatter.
 This is a book chapter. your job is to output a typesetted file (USING HTML) which can be converted to a pdf book. So ensure that this book is formatted beautifully following all rules of formatting books. The book should be able to be read easily in a web browser. Include these features in html:
@@ -229,7 +228,25 @@ This is the sample HTML : <!DOCTYPE html>
             model=model,
             temperature=0
         )
-    response = chat_completion.choices[0].message.content
+    
+    if chat_completion.choices[0].finish_reason != "content_filter":
+        response = chat_completion.choices[0].message.content
+    else:
+        client = AsyncOpenAI(
+          base_url="https://openrouter.ai/api/v1",
+          api_key = st.secrets["Mistral_api"],
+        )
+        
+        chat_completion = await client.chat.completions.create(
+          model="mistralai/codestral-2501",
+          messages=[
+            {
+              "role": "user",
+              "content": prompt
+            }
+          ]
+        )
+        response = chat_completion.choices[0].message.content
     return response
 
   elif(len(chapter) > max_chars and len(chapter) <= 70000):
@@ -237,9 +254,6 @@ This is the sample HTML : <!DOCTYPE html>
         split_pos = chapter.rfind('.', 0, max_chars)
         first_part = chapter[:split_pos + 1]
         second_part = chapter[split_pos + 1:]
-        st.write(first_part)
-        st.write("Second Part:")
-        st.write(second_part)
 
         # Process the first part normally
         prompt_template_1 = """
@@ -264,7 +278,7 @@ Keep this in mind : Left and Right margins are minimum.
 13. There should be some additional space between the chapter heading and the first paragraph.
 14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
 15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
-
+16. Make sure to include the entire text given as input in the html. You can check this by checking the last line of the response and the input. Dont write anything about this in the repsonse.
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
 Excerpts from Dhruv&#39;s journal:
@@ -451,8 +465,26 @@ This is the sample HTML : <!DOCTYPE html>
             model=model,
             temperature=0
         )
+        if chat_completion_1.choices[0].finish_reason != "content_filter":
+            response_1 = chat_completion_1.choices[0].message.content
+        else:
+            client = AsyncOpenAI(
+              base_url="https://openrouter.ai/api/v1",
+              api_key = st.secrets["Mistral_api"],
+            )
+            
+            chat_completion_1 = await client.chat.completions.create(
+              model="mistralai/codestral-2501",
+              messages=[
+                {
+                  "role": "user",
+                  "content": prompt_1
+                }
+              ]
+            )
+            response_1 = chat_completion_1.choices[0].message.content
 
-        response_1 = chat_completion_1.choices[0].message.content
+        
 
         # Process the second part with a modified prompt (no HTML headers)
         prompt_template_2 = """
@@ -495,7 +527,24 @@ This is the sample HTML : <!DOCTYPE html>
             temperature=0
         )
 
-        response_2 = chat_completion_2.choices[0].message.content
+        if chat_completion_2.choices[0].finish_reason != "content_filter":
+            response_2 = chat_completion_2.choices[0].message.content
+        else:
+            client = AsyncOpenAI(
+              base_url="https://openrouter.ai/api/v1",
+              api_key = st.secrets["Mistral_api"],
+            )
+            
+            chat_completion_2 = await client.chat.completions.create(
+              model="mistralai/codestral-2501",
+              messages=[
+                {
+                  "role": "user",
+                  "content": prompt_2
+                }
+              ]
+            )
+            response_2 = chat_completion_2.choices[0].message.content
 
         # Now, merge the two responses
         # Extract the <body> content from the first response and append the second response
@@ -546,7 +595,7 @@ Keep this in mind : Left and Right margins are minimum.
 13. There should be some additional space between the chapter heading and the first paragraph.
 14. The chapter heading can be anything like just a number or roman numeral and can also include just special characters like Chapter ^. 
 15. Do not make any changes to the provided chapter heading and use the heading as it is given only. Do not write the word chapter before the heading if it is not given.
-
+16. Make sure to include the entire text given as input in the html. You can check this by checking the last line of the response and the input. Dont write anything about this in the repsonse.
 I am giving you a sample chapter and its HTML output for your reference. Your outputs should be in that simialr manner.
     This is the sample book : : Chapter 1 - Charred Dreams / Cigarettes &amp; Serenading
 Excerpts from Dhruv&#39;s journal:
@@ -734,7 +783,24 @@ This is the sample HTML : <!DOCTYPE html>
           temperature=0
       )
 
-        response_1 = chat_completion_1.choices[0].message.content
+        if chat_completion_1.choices[0].finish_reason != "content_filter":
+            response_1 = chat_completion_1.choices[0].message.content
+        else:
+            client = AsyncOpenAI(
+              base_url="https://openrouter.ai/api/v1",
+              api_key = st.secrets["Mistral_api"],
+            )
+            
+            chat_completion_1 = await client.chat.completions.create(
+              model="mistralai/codestral-2501",
+              messages=[
+                {
+                  "role": "user",
+                  "content": prompt_1
+                }
+              ]
+            )
+            response_1 = chat_completion_1.choices[0].message.content
 
       # Process the second part with a modified prompt (no HTML headers)
         prompt_template_2 = """
@@ -777,7 +843,24 @@ This is the sample HTML : <!DOCTYPE html>
           temperature=0
       )
 
-        response_2 = chat_completion_2.choices[0].message.content
+        if chat_completion_2.choices[0].finish_reason != "content_filter":
+            response_2 = chat_completion_2.choices[0].message.content
+        else:
+            client = AsyncOpenAI(
+              base_url="https://openrouter.ai/api/v1",
+              api_key = st.secrets["Mistral_api"],
+            )
+            
+            chat_completion_2 = await client.chat.completions.create(
+              model="mistralai/codestral-2501",
+              messages=[
+                {
+                  "role": "user",
+                  "content": prompt_2
+                }
+              ]
+            )
+            response_2 = chat_completion_2.choices[0].message.content
 
         # Process the second part with a modified prompt (no HTML headers)
         prompt_template_3 = """
@@ -820,7 +903,24 @@ This is the sample HTML : <!DOCTYPE html>
           temperature=0
       )
 
-        response_3 = chat_completion_3.choices[0].message.content
+        if chat_completion_3.choices[0].finish_reason != "content_filter":
+            response_3 = chat_completion_3.choices[0].message.content
+        else:
+            client = AsyncOpenAI(
+              base_url="https://openrouter.ai/api/v1",
+              api_key = st.secrets["Mistral_api"],
+            )
+            
+            chat_completion_3 = await client.chat.completions.create(
+              model="mistralai/codestral-2501",
+              messages=[
+                {
+                  "role": "user",
+                  "content": prompt_3
+                }
+              ]
+            )
+            response_3 = chat_completion_3.choices[0].message.content
 
         # Now, merge the two responses
         # Extract the <body> content from the first response and append the second response
