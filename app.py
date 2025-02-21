@@ -224,12 +224,13 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
 
     # Dropdown menu for font selection
     fonts = [
-        'Courier', 'Courier-Bold', 'Courier-BoldOblique', 'Courier-Oblique',
-        'Helvetica', 'Helvetica-Bold', 'Helvetica-BoldOblique', 'Helvetica-Oblique',
-        'Times-Roman', 'Times-Bold', 'Times-BoldItalic', 'Times-Italic',
-        'Symbol', 'ZapfDingbats'
+        'Adobe Jenson Pro', 'Arial', 'BemboStd', 'Caslon', 'Courier',
+        'Garamond', 'Goudy', 'Helvetica', 'Hoefler TXT', 'Minion Pro',
+        'Requiem Text', 'Sabon', 'SabonLTPro', 'Times-Roman'
     ]
+    
     font_style = st.selectbox('Select Font Style:', fonts)
+    font_path = f"fonts/{font_style}.ttf"
 
     First_page_no = st.number_input('Enter the First Page Number:', min_value=0, max_value=1000, step=1)
     options = ['Left', 'Right']
@@ -246,7 +247,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         wc = []
         async def process_chapter(idx, chapter_text):
             # Get response asynchronously
-            response = await get_response(chapter_text, font_size, line_height, language)
+            response = await get_response(chapter_text, font_size, line_height, language, font_style, font_path)
             html_pth = save_response(response)
             word_count = get_word_count(html_pth)
     
@@ -274,7 +275,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     
             # Create overlay PDF and calculate current position
             current_position = create_overlay_pdf(
-                overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, current_position
+                overlay_pdf, total_pages, current_page_number, book_name, author_name, font_style, font_path, current_position
             )
     
             final_pdf = f'final_{idx+1}.pdf'

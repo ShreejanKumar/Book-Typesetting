@@ -10,8 +10,10 @@ from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.units import mm
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
 
-async def get_response(chapter, font_size, lineheight, language):
+async def get_response(chapter, font_size, lineheight, language, font_style, font_path):
   # Set up OpenAI API client
   client = AsyncOpenAI(api_key = st.secrets["Openai_api"])
   font_size_px = f"{font_size}px"
@@ -114,8 +116,16 @@ This is the sample HTML : <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1</title>
     <style>
+
+        @font-face {
+            font-family: <<font_style>>;
+            src: url(<<font_path>>) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
-            font-family: 'Times New Roman', serif;
+            font-family: <<font_style>>, serif;
             font-size: <<fontsize>>;
             line-height: <<lineheight>>;
             text-align: justify;
@@ -217,7 +227,7 @@ This is the sample HTML : <!DOCTYPE html>
 
     Here is the target chapter: <<CHAPTER_TEXT>>"""
     lan = 'en' if language == "English" else 'hi'
-    prompt = prompt_template.replace("<<CHAPTER_TEXT>>", chapter).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
+    prompt = prompt_template.replace("<<CHAPTER_TEXT>>", chapter).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan).replace("<<font_style>>", font_style).replace("<<font_path>>", font_path)
     chat_completion = await client.chat.completions.create(
             messages=[
                 {
@@ -349,8 +359,16 @@ This is the sample HTML : <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1</title>
     <style>
+
+        @font-face {
+            font-family: <<font_style>>;
+            src: url(<<font_path>>) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
-            font-family: 'Times New Roman', serif;
+            font-family: <<font_style>>, serif;
             font-size: <<fontsize>>;
             line-height: <<lineheight>>;
             text-align: justify;
@@ -453,7 +471,7 @@ This is the sample HTML : <!DOCTYPE html>
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
         lan = 'en' if language == "English" else 'hi'
-        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
+        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan).replace("<<font_style>>", font_style).replace("<<font_path>>", font_path)
 
         chat_completion_1 = await client.chat.completions.create(
             messages=[
@@ -666,8 +684,16 @@ This is the sample HTML : <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1</title>
     <style>
+
+        @font-face {
+            font-family: <<font_style>>;
+            src: url(<<font_path>>) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
-            font-family: 'Times New Roman', serif;
+            font-family: <<font_style>>, serif;
             font-size: <<fontsize>>;
             line-height: <<lineheight>>;
             text-align: justify;
@@ -770,7 +796,7 @@ This is the sample HTML : <!DOCTYPE html>
     Here is the target chapter: <<CHAPTER_TEXT>>
         """
         lan = 'en' if language == "English" else 'hi'
-        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan)
+        prompt_1 = prompt_template_1.replace("<<CHAPTER_TEXT>>", first_part).replace("<<fontsize>>", font_size_px).replace("<<lineheight>>", line_height_val).replace("<<lang>>", lan).replace("<<font_style>>", font_style).replace("<<font_path>>", font_path)
 
         chat_completion_1 = await client.chat.completions.create(
           messages=[
@@ -981,12 +1007,14 @@ def get_pdf_page_count(pdf_file):
         reader = PyPDF2.PdfReader(f)
         return len(reader.pages)
     
-def create_overlay_pdf(overlay_pdf, total_pages, starting_page_number, book_name, author_name, font, current_position):
+def create_overlay_pdf(overlay_pdf, total_pages, starting_page_number, book_name, author_name, font_style, font_path, current_position):
     c = canvas.Canvas(overlay_pdf, pagesize=A4)
     width, height = 130 * mm, 197 * mm  # Correctly converting mm to points
+    custom_font_name = font_style
+    pdfmetrics.registerFont(TTFont(custom_font_name, font_path))
 
     def draw_header_footer(page_number, position):
-        c.setFont(font, 12)
+        c.setFont(custom_font_name, 12)
 
         if page_number == starting_page_number:
             # First page of the chapter: Draw page number at the bottom center
