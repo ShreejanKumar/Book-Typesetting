@@ -12,6 +12,7 @@ from pypdf import PdfReader, PdfWriter
 from reportlab.lib.units import mm
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+import re
 
 async def get_response(chapter, font_size, lineheight, language, font_style, font_path):
   # Set up OpenAI API client
@@ -1071,3 +1072,42 @@ def overlay_headers_footers(main_pdf, overlay_pdf, output_pdf):
     # Write the combined PDF to the output file
     with open(output_pdf, 'wb') as outfile:
         pdf_writer.write(outfile)
+
+
+
+
+def modify_element(element, html_path):
+    
+    with open(html_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+    for ele in element:
+        if ele["text"] in content:
+            style_match = re.search(r'<style>(.*?)</style>', content, re.DOTALL)
+            if style_match:
+                style_content = style_match.group(1)
+                phrase = ele["text"]
+                font_style = ele["font_style"]
+                font_size = ele["font_size"]
+                font_class = font_style.replace(" ", "-").lower()
+                font_face_rule = f"""
+                @font-face {{
+                    font-family: "{font_style}";
+                    src: url("fonts/{font_style}.ttf") format("truetype");
+                    font-weight: normal;
+                    font-style: normal;
+                }}
+                
+                .{font_class} {{
+                    font-family: "{font_style}", serif;
+                    font-size: {font_size}px;
+                }}
+                """
+                style_content += font_face_rule
+                span_tag = f'<span class="{font_class}">{phrase}</span>'
+                content = content.replace(phrase, span_tag)
+                new_style_block = f'<style>{style_content}</style>'
+                content = re.sub(r'<style>.*?</style>', new_style_block, content, flags=re.DOTALL)
+                with open(html_path, 'w', encoding='utf-8') as file:
+                    file.write(content)
+            
+            

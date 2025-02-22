@@ -2,7 +2,7 @@ import streamlit as st
 import nest_asyncio
 from playwright.async_api import async_playwright
 import asyncio
-from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers
+from main import get_response, save_response, get_pdf_page_count, create_overlay_pdf, overlay_headers_footers, modify_element
 from concurrent.futures import ThreadPoolExecutor
 from reportlab.pdfgen import canvas
 import os
@@ -206,7 +206,13 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             word_count += 1
     
         return word_count
-
+    
+    fonts = [
+        'Adobe Jenson Pro', 'Arial', 'BemboStd', 'Caslon', 'Courier',
+        'Garamond', 'Goudy', 'Helvetica', 'Hoefler TXT', 'Minion Pro',
+        'Requiem Text', 'Sabon', 'SabonLTPro', 'Times-Roman'
+    ]
+    
     # Dynamic list to store chapter inputs
     chapter_texts = []
     num_chapters = st.number_input('How many chapters do you want to add?', min_value=1, max_value=10, step=1)
@@ -216,18 +222,13 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         chapter_texts.append(chapter_text)
         word_count = calculate_word_count(chapter_text)
         st.write(f'Word count: {word_count}')
-
+        
+            
     author_name = st.text_input('Enter the Author Name:')
     book_name = st.text_input('Enter the Book Name:')
     font_size = st.text_input('Enter the Font Size')
     line_height = st.text_input('Enter the Line Spacing')
 
-    # Dropdown menu for font selection
-    fonts = [
-        'Adobe Jenson Pro', 'Arial', 'BemboStd', 'Caslon', 'Courier',
-        'Garamond', 'Goudy', 'Helvetica', 'Hoefler TXT', 'Minion Pro',
-        'Requiem Text', 'Sabon', 'SabonLTPro', 'Times-Roman'
-    ]
     
     font_style = st.selectbox('Select Font Style:', fonts)
     font_path = f"fonts/{font_style}.ttf"
@@ -236,6 +237,18 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
     options = ['Left', 'Right']
     first_page_position = st.selectbox('Select First Page Position:', options)
     language = st.selectbox('Select Language', ['English','Hindi'])
+    
+    ele = []
+    num_elements = st.number_input("Enter the number of different elements: ", min_value=0, max_value=10, step=1)
+    for j in range(num_elements):
+        element = st.text_input(f"Enter element {j + 1}:", key=f"phrase_{j+1}")
+        font_style_ele = st.selectbox('Select Font Style:', fonts, key=f"style_{j+1}")
+        font_size_ele = st.number_input(f"Enter font size for '{element}':", min_value=8, max_value=72, step=1, key=f"size_{j+1}")
+        ele.append({
+        "text": element,
+        "font_style": font_style_ele,
+        "font_size": font_size_ele
+    })
 
     # Button to generate PDF
     if st.button("Generate PDF"):
@@ -249,6 +262,7 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
             # Get response asynchronously
             response = await get_response(chapter_text, font_size, line_height, language, font_style, font_path)
             html_pth = save_response(response)
+            modify_element(ele, html_pth)
             word_count = get_word_count(html_pth)
     
             main_pdf = f'out_{idx+1}.pdf'
