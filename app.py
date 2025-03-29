@@ -208,9 +208,12 @@ if st.session_state['authenticated'] and not st.session_state['reset_mode']:
         return word_count
     
     fonts = [
-        'Adobe Jenson Pro', 'Arial', 'BemboStd', 'Caslon', 'Courier',
-        'Garamond', 'Goudy', 'Helvetica', 'Hoefler TXT', 'Minion Pro',
-        'Requiem Text', 'Sabon', 'SabonLTPro', 'Times-Roman'
+        'Adobe Jenson Pro', 'Arial', 'ArianaVioleta', 'BeckyTahlia', 'BemboStd',
+        'Caslon', 'Conquest', 'Copenhagen', 'Courier', 'Garamond', 'Glorious',
+        'Goudy', 'HappySwirly', 'Helvetica', 'Hoefler TXT', 'Konimasa',
+        'LucidaUnicodeCalligraphy', 'Mefikademo', 'Minion Pro', 'MorganChalk',
+        'Requiem Text', 'Sabon', 'SabonLTPro', 'ShadeBlue', 'SongstarFree',
+        'Times-Roman', 'ToThePointRegular', 'WinterSong'
     ]
     
     # Dynamic list to store chapter inputs
